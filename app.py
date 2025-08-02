@@ -6,6 +6,10 @@ import pickle
 with open("model.pkl", "rb") as f:
     model = pickle.load(f)
 
+with open("RF_model.pkl", "rb") as r:
+    RForestmodel = pickle.load(r)
+
+
 app = Flask(__name__)
 
 @app.route("/")
@@ -32,8 +36,11 @@ def predict():
     # Predict
     input_data = np.array([[hours, attendance, previous]])
     predicted = model.predict(input_data)[0]
+    RF = RForestmodel.predict(input_data)[0]
 
-    return jsonify({"predicted_marks": round(predicted, 2)})
+    return jsonify({
+    "predicted_marks": round(predicted, 2),
+    "predicted_marks_with_RF": round(RF, 2) })
 
 if __name__ == "__main__":
     app.run(debug=True)
